@@ -45,7 +45,6 @@ window.onmouseup = (event) => {
 window.onmousemove = (event) => {
     if (drag && mouseDown != null) {
         var mouseWorldPoint = new Point(event.x, event.y);
-        console.log(Main.Camera.screenToWorld(mouseDown).sub(Main.Camera.screenToWorld(mouseWorldPoint)));
         Main.Camera.position = lastCameraPos.add(Main.Camera.screenToWorld(mouseDown).sub(Main.Camera.screenToWorld(mouseWorldPoint)));
     } else {
         Main.Pen.onMouseMove(event);

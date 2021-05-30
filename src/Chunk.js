@@ -8,8 +8,9 @@ class Chunk {
         this.position = Chunk.chunkIdToChunkPos(id);
         this.lines = new Array(); // in world position
 
-        var s = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit()))
-        this.image = new OffscreenCanvas(s.x, s.y);
+        //var s = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit()))
+        this.image = new OffscreenCanvas(0,0);
+        this.resizeOffscreenCanvas();
         
         this.ctx = this.image.getContext("2d");
         this.ctx.lineWidth = 10;
@@ -44,9 +45,7 @@ class Chunk {
 
     // Updates image on zoom and when drawn on
     update() {
-        var offscreenCanvasSize = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit()));
-        this.image.width = offscreenCanvasSize.x;
-        this.image.height = offscreenCanvasSize.y;
+        this.resizeOffscreenCanvas()
 
         this.ctx.lineCap = "round"
 
@@ -70,6 +69,12 @@ class Chunk {
         // render
     }
 
+    resizeOffscreenCanvas() {
+        var offscreenCanvasSize = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit())).add(new Point(1));
+        this.image.width = offscreenCanvasSize.x;
+        this.image.height = offscreenCanvasSize.y;
+    }
+
     worldPosRelativeToChunkPos(worldPos) {
         return worldPos.sub(this.position);
     }
@@ -84,7 +89,7 @@ class Chunk {
         
         // boarder around chunk
         Main.CTX.strokeStyle = "rgb(255,0,0)";
-        Main.CTX.strokeRect(pos.x, pos.y, this.image.width,this.image.height);
+        //Main.CTX.strokeRect(pos.x, pos.y, this.image.width,this.image.height);
         Main.CTX.strokeStyle = "rgb(0,0,0)";
     }
 }

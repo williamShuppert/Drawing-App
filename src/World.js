@@ -11,13 +11,13 @@ class World {
         this.chunks = new DoubleSortedArray();
     }
 
-    render(canvas, camera) {
+    render(canvas, camera) { // TODO: only render visible chunks
         this.chunks.forEach(chunk => {
             chunk.render(canvas, camera);
         });
     }
 
-    renderUpdate() {
+    renderUpdate() { // TODO: only update visible chunks
         this.chunks.forEach(chunk => {
             chunk.update();
         });

@@ -9,16 +9,34 @@ class Main {
         Main.CTX.canvas.height = window.innerHeight;
         Main.CTX.translate(0.5, 0.5);
 
+        this.lastFrame = Date.now()
+        this.deltaTime = 0
+        this.frameCount = 0
+        this.fpsTime = 0
+
         this.gameLoop = this.gameLoop.bind(this);
     }
 
     gameLoop() {
-
+        
         Main.CTX.clearRect(-.5,-.5, Main.CTX.canvas.width, Main.CTX.canvas.height);
         
         Main.Camera.render(Main.CTX);
         Main.World.render(Main.CTX, Main.Camera);
         
+        this.deltaTime = (Date.now() - this.lastFrame) / 1000
+        this.lastFrame = Date.now()
+
+        this.fpsTime += this.deltaTime
+        this.frameCount++
+        if (this.fpsTime >= 1) {
+            console.clear()
+            console.log("FPS:", this.frameCount)
+
+            this.frameCount = 0
+            this.fpsTime = 0
+        }
+
         requestAnimationFrame(this.gameLoop);
     }
     
