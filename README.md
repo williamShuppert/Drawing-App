@@ -1,1 +1,3 @@
 # Drawing-App
+
+An infinite scrolling grid to draw on. Work in progress...
