@@ -1,13 +1,13 @@
 import Chunk from "./Chunk.js";
 import DoubleSortedArray from "./DoubleSortedArray.js";
 import Point from "./Point.js";
+import Main from "./Main.js";
 
 
 class World {
 
     constructor(camera) {
-        this.camera = camera;
-        this.chunkSize = new Point(25,25);
+        Chunk.size = new Point(25,25);
         this.chunks = new DoubleSortedArray();
     }
 
@@ -17,22 +17,24 @@ class World {
         });
     }
 
+    renderUpdate() {
+        this.chunks.forEach(chunk => {
+            chunk.update();
+        });
+    }
+
     addObject(obj, chunkId) {
-        var chunk = this.chunks.get(chunkId.x, chunkId.y);
-        if (chunk == null) {
-            chunk = this.chunks.set(chunkId.x, chunkId.y, new Chunk(chunkId, this.chunkIdToChunkPos(chunkId), this.chunkSize.mult(new Point(this.camera.pixelPerWorldUnit()))));
+        var chunk = this.chunks.get(chunkId.x, chunkId.y); // get chunk if it exists
+        if (chunk == null) { // create new chunk if needed
+            chunk = this.chunks.set(chunkId.x, chunkId.y, new Chunk(chunkId));
             console.log("Added new Chunk");
         }
         chunk.lines.push(obj);
-        return chunk;
+        return chunk; // return the chunk the object is in
     }
 
-    chunkIdToChunkPos(chunkId) {
-        return chunkId.mult(this.chunkSize);
-    }
-
-    pointToChunkId(worldPoint) {
-        return new Point(worldPoint.div(this.chunkSize).floor());
+    static worldPointToChunkId(worldPoint) {
+        return new Point(worldPoint.div(Chunk.size).floor());
     }
 }
 

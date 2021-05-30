@@ -1,7 +1,6 @@
-import Chunk from "./Chunk.js";
+import Main from "./Main.js";
 import Point from "./Point.js";
 import World from "./World.js";
-import Camera from "./Camera.js";
 
 class Pen {
 
@@ -15,7 +14,7 @@ class Pen {
     }
 
     onMouseDown(event) {
-        this.startNewLine(this.camera.screenToWorld(new Point(event.x, event.y)));
+        this.startNewLine(Main.Camera.screenToWorld(new Point(event.x, event.y)));
         this.canDraw = true;
     }
 
@@ -24,14 +23,14 @@ class Pen {
 
         var previousPoint = this.currentChunk.lines[this.currentChunk.lines.length - 1][this.currentChunk.lines[this.currentChunk.lines.length - 1].length-1];
         var mousePos = new Point(event.x, event.y);
-        var mouseWorldPos = this.camera.screenToWorld(mousePos);
-        var chunkId = this.world.pointToChunkId(mouseWorldPos);
-        if (previousPoint != null && previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return;
+        var mouseWorldPos = Main.Camera.screenToWorld(mousePos);
+        var chunkId = World.worldPointToChunkId(mouseWorldPos);
+        if (previousPoint != null && previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return; // TODO: change to screen points
 
         
         if (!this.currentChunk.id.equals(chunkId)) {            
             this.currentLine.push(mouseWorldPos)
-            this.currentChunk.updateLastLine(this.camera);
+            this.currentChunk.updateLastLine(Main.Camera);
 
             this.endLine();
             this.startNewLine(mouseWorldPos);
@@ -39,7 +38,8 @@ class Pen {
             this.currentLine.push(previousPoint)
         } else {
             this.currentLine.push(mouseWorldPos)
-            this.currentChunk.updateLastLine(this.camera);
+            if (this.currentLine.length != 1)
+                this.currentChunk.updateLastLine(Main.Camera);
         }
     }
 
@@ -48,6 +48,7 @@ class Pen {
     }
 
     endLine() {
+        //if (this.currentLine.length == 1)
         this.currentChunk = null;
         this.currentLine = null;
         this.canDraw = false;
@@ -57,7 +58,10 @@ class Pen {
     startNewLine(worldPoint) {
         this.canDraw = true;
         this.currentLine = new Array();
-        this.currentChunk = this.world.addObject(this.currentLine, this.world.pointToChunkId(worldPoint));
+        this.currentLine.push(worldPoint);
+        this.currentLine.push(worldPoint);
+        this.currentChunk = Main.World.addObject(this.currentLine, World.worldPointToChunkId(worldPoint));
+        this.currentChunk.updateLastLine(Main.Camera);
         console.log("Start line")
     }
 
