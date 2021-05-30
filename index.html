@@ -8,7 +8,52 @@
     <link rel="stylesheet" href="style.css">
     <script defer type="module" src="src/index.js"></script>
 </head>
-    <body>
+    <body style="overflow: hidden;">
+        <div style="display: none; position: absolute; background-color: rgba(0, 0, 0, 0.7); height: 100%; color: white; font-family:'Gill Sans MT', Calibri, sans-serif">
+            <span>X</span>
+            <h1>Menu</h1>
+            <div id="info-tab">
+                <h2>Info:</h2>               
+                <div>
+                    <label>FPS: </label>
+                    <span id="fps-value">144</span>
+                </div>
+                <div>
+                    <label>Chunks rendered: </label>
+                    <span id="">?</span>
+                </div>
+                <div>
+                    <label>Total chunks: </label>
+                    <span id="">?</span>
+                </div>
+            </div>
+            <div id="navigation-tab">
+                <h2>Navigation:</h2>
+                <div>
+                    <label>You are at: </label>
+                    <span id="">(x, y)</span>
+                </div>
+                <div>
+                    <input placeholder="x">
+                    <input placeholder="y">
+                    <button>Go</button>
+                    <br>
+                    <input placeholder="name">
+                    <button>Save</button>  
+                </div>
+                <div>
+                    <button>Home</button>
+                    <button>Castle</button>
+                </div>
+            </div>
+            <div id="tools-tab">
+                <h2>Tools:</h2>
+                <button>Pen</button>
+                <span>Color</span>
+                <button>Eraser</button>
+                <button>Hand</button>
+            </div>
+        </div>
         <canvas id="canvas"></canvas>
     </body>
 </html>

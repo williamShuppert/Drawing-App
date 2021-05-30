@@ -1,3 +1,4 @@
+import Main from "./Main.js";
 import Point from "./Point.js";
 
 class Camera {
@@ -8,20 +9,20 @@ class Camera {
         this.maxChunk = 40; // how many chunks you can see horizontally when at 0% zoom
     }
 
-    render(canvas) {
-        canvas.lineWidth = 1;
-        canvas.beginPath();
+    render() {
+        Main.CTX.lineWidth = .5;
+        Main.CTX.beginPath();
         for (var i = 0; i < this.cameraWorldWidth(); i++) {
             var p = this.worldToScreen(this.position.ceil().add(new Point(i)));
-            canvas.moveTo(p.x,0);
-            canvas.lineTo(p.x,window.innerHeight);
+            Main.CTX.moveTo(p.x,0);
+            Main.CTX.lineTo(p.x,window.innerHeight);
         }
         for (var i = 0; i < this.cameraWorldHeight(); i++) {
             var p = this.worldToScreen(this.position.ceil().add(new Point(i)));
-            canvas.moveTo(0,p.y);
-            canvas.lineTo(window.innerWidth,p.y);
+            Main.CTX.moveTo(0,p.y);
+            Main.CTX.lineTo(window.innerWidth,p.y);
         }
-        canvas.stroke();
+        Main.CTX.stroke();
     }
 
     cameraWorldWidth() {

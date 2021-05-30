@@ -13,6 +13,7 @@ class Main {
         this.deltaTime = 0
         this.frameCount = 0
         this.fpsTime = 0
+        this.fpsElement = document.getElementById("fps-value");
 
         this.gameLoop = this.gameLoop.bind(this);
     }
@@ -21,8 +22,8 @@ class Main {
         
         Main.CTX.clearRect(-.5,-.5, Main.CTX.canvas.width, Main.CTX.canvas.height);
         
-        Main.Camera.render(Main.CTX);
         Main.World.render(Main.CTX, Main.Camera);
+        Main.Camera.render(Main.CTX);
         
         this.deltaTime = (Date.now() - this.lastFrame) / 1000
         this.lastFrame = Date.now()
@@ -32,6 +33,7 @@ class Main {
         if (this.fpsTime >= 1) {
             console.clear()
             console.log("FPS:", this.frameCount)
+            this.fpsElement.innerHTML = this.frameCount;
 
             this.frameCount = 0
             this.fpsTime = 0

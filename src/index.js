@@ -6,6 +6,19 @@ var drag = false;
 var mouseDown = null;
 var lastCameraPos = null;
 
+// TODO
+/*
+Resizing canvas on window resize
+Work on Menu
+Implement Objects instead of lines
+Fix line width when zooming
+Fix boarder drawing issue
+World should only render and update visible chunks
+Tools such as pen, eraser, drag, ect...
+Undo
+Saving and opening from file
+*/
+
 var main = new Main();
 main.gameLoop();
 
