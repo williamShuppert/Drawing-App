@@ -24,7 +24,7 @@ class Chunk {
         point1 = this.worldPointToChunkScreenPoint(point1);
         point2 = this.worldPointToChunkScreenPoint(point2);
         this.ctx.beginPath();
-        this.ctx.lineWidth = line.width;
+        this.ctx.lineWidth = Main.Camera.getRelativeWidth(line.width);
         this.ctx.strokeStyle = line.style;
         this.ctx.lineTo(point1.x, point1.y);
         this.ctx.lineTo(point2.x, point2.y);
@@ -38,24 +38,7 @@ class Chunk {
         this.objects.forEach(obj => {
             obj.render(this);
         });
-        return;
-        // Redraw all lines
-        this.ctx.lineWidth = 10;
-        this.lines.forEach(line => {
-            this.ctx.beginPath();
-            var p = this.worldPosRelativeToChunkPos(line[0]);
-            p = p.add(Main.Camera.position);
-            p = Main.Camera.worldToScreen(p);
-            this.ctx.moveTo(p.x, p.y);
-            line.forEach(point => {
-                p = this.worldPosRelativeToChunkPos(point);
-                p = p.add(Main.Camera.position);
-                p = Main.Camera.worldToScreen(p);
-                this.ctx.lineTo(p.x, p.y);
-            });
-            this.ctx.stroke();
-        });
-
+        
         // render
     }
 

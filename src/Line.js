@@ -1,4 +1,5 @@
 import Object from "./Object.js";
+import Main from "./Main.js";
 
 class Line extends Object {
     constructor(position) {
@@ -12,7 +13,7 @@ class Line extends Object {
     render(chunk) {
         var point = chunk.worldPointToChunkScreenPoint(this.points[0])
         chunk.ctx.beginPath();
-        chunk.ctx.lineWidth = this.width;
+        chunk.ctx.lineWidth = Main.Camera.getRelativeWidth(this.width);
         chunk.ctx.strokeStyle = this.style;
         chunk.ctx.lineTo(point.x, point.y);
         for (var i = 1; i < this.points.length; i++) {
