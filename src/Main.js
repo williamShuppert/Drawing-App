@@ -9,11 +9,16 @@ class Main {
         Main.CTX.canvas.height = window.innerHeight;
         Main.CTX.translate(0.5, 0.5);
 
+        this.renderGrid = true;
+        this.renderChunkBoarders = true;
+
         this.lastFrame = Date.now()
         this.deltaTime = 0
         this.frameCount = 0
         this.fpsTime = 0
         this.fpsElement = document.getElementById("fps-value");
+        
+        this.currentPositionElement = document.getElementById("current-position-value");
 
         this.gameLoop = this.gameLoop.bind(this);
     }
@@ -22,8 +27,8 @@ class Main {
         
         Main.CTX.clearRect(-.5,-.5, Main.CTX.canvas.width, Main.CTX.canvas.height);
         
-        Main.World.render(Main.CTX, Main.Camera);
-        Main.Camera.render(Main.CTX);
+        Main.World.render(Main.CTX, Main.Camera, this.renderChunkBoarders);
+        if (this.renderGrid) Main.Camera.render(Main.CTX);
         
         this.deltaTime = (Date.now() - this.lastFrame) / 1000
         this.lastFrame = Date.now()
@@ -31,9 +36,11 @@ class Main {
         this.fpsTime += this.deltaTime
         this.frameCount++
         if (this.fpsTime >= 1) {
-            console.clear()
-            console.log("FPS:", this.frameCount)
+            //console.clear()
+            //console.log("FPS:", this.frameCount)
             this.fpsElement.innerHTML = this.frameCount;
+            
+            this.currentPositionElement.innerHTML = Main.Camera.position.round(2);
 
             this.frameCount = 0
             this.fpsTime = 0
@@ -42,6 +49,12 @@ class Main {
         requestAnimationFrame(this.gameLoop);
     }
     
+    toggleGrid() {
+        this.renderGrid = !this.renderGrid;
+    }
+    toggleChunkBoarders() {
+        this.renderChunkBoarders = !this.renderChunkBoarders;
+    }
 }
 
 Main.Canvas = document.getElementById("canvas");

@@ -8,7 +8,6 @@ var lastCameraPos = null;
 
 // TODO
 /*
-Resizing canvas on window resize
 Work on Menu
 Implement Objects instead of lines
 Fix line width when zooming
@@ -62,4 +61,11 @@ window.onmousemove = (event) => {
     } else {
         Main.Pen.onMouseMove(event);
     }
+}
+
+window.onresize = event => {
+    Main.CTX.canvas.width  = window.innerWidth;
+    Main.CTX.canvas.height = window.innerHeight;
+    Main.World.renderUpdate();
+    Main.Camera.render();
 }

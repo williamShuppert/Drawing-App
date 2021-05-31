@@ -11,9 +11,9 @@ class World {
         this.chunks = new DoubleSortedArray();
     }
 
-    render(canvas, camera) { // TODO: only render visible chunks
+    render(canvas, camera, renderChunkBoarders) { // TODO: only render visible chunks
         this.chunks.forEach(chunk => {
-            chunk.render(canvas, camera);
+            chunk.render(canvas, camera, renderChunkBoarders);
         });
     }
 
