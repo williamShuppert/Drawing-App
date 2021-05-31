@@ -63,6 +63,10 @@ window.onmousemove = (event) => {
     }
 }
 
+document.onwheel = event => {
+    Main.Camera.zoomToPoint(new Point(event.x, event.y), event.deltaY > 0)
+}
+
 window.onresize = event => {
     Main.CTX.canvas.width  = window.innerWidth;
     Main.CTX.canvas.height = window.innerHeight;
