@@ -8,52 +8,88 @@
     <link rel="stylesheet" href="style.css">
     <script defer type="module" src="src/index.js"></script>
 </head>
-    <body style="overflow: hidden;">
-        <div style="display: none; position: absolute; background-color: rgba(0, 0, 0, 0.7); height: 100%; color: white; font-family:'Gill Sans MT', Calibri, sans-serif">
-            <span>X</span>
-            <h1>Menu</h1>
-            <div id="info-tab">
-                <h2>Info:</h2>               
-                <div>
-                    <label>FPS: </label>
-                    <span id="fps-value">144</span>
+    <body>
+        <div id="menu">
+            <div id="menu-wrapper">
+                <h1 class="menu-title">
+                    Menu
+                    <span class="close-icon" onclick="document.getElementById('menu-wrapper').classList.toggle('menu-hidden')">X</span>
+                </h1>
+                <!-- Information -->
+                <div class="tab-wrapper">
+                    <div class="tab-header">
+                        <h2>Information</h2>  
+                    </div>
+                    <div class="tab-content">    
+                                            
+                        <div class="menu-item">
+                            <label>FPS: </label>
+                            <span id="fps-value">144</span>
+                        </div>
+                        <div class="menu-item">
+                            <label>Chunks rendered: </label>
+                            <span id="">?</span>
+                        </div>
+                        <div class="menu-item">
+                            <label>Total chunks: </label>
+                            <span id="">?</span>
+                        </div>
+                        <div class="menu-item">
+                            <button onclick="">Toggle Chunk Borders</button>
+                        </div> 
+                    </div>
                 </div>
-                <div>
-                    <label>Chunks rendered: </label>
-                    <span id="">?</span>
+                <!-- Navigation -->
+                <div class="tab-wrapper">
+                    <div class="tab-header">
+                        <h2>Navigation</h2>  
+                    </div>
+                    <div class="tab-content">                         
+                        <div class="menu-item">
+                            <label>You are at: </label>
+                            <span id="current-position-value">(0, 0)</span>
+                        </div>
+                        <div class="menu-item">
+                            <input placeholder="x">
+                            <input placeholder="y">
+                            <button>Go</button>
+                            <br>
+                            <input placeholder="name">
+                            <button>Save</button>  
+                        </div>
+                        <div class="menu-item">
+                            <button>Home</button>
+                            <button>Castle</button>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label>Total chunks: </label>
-                    <span id="">?</span>
+                <!-- Tools -->
+                <div class="tab-wrapper">
+                    <div class="tab-header">
+                        <h2>Tools</h2>  
+                    </div>
+                    <div class="tab-content">                         
+                        <h2>Tools:</h2>
+                        <button>Pen</button>
+                        <span>Color</span>
+                        <button>Eraser</button>
+                        <button>Hand</button>
+                    </div>
                 </div>
-            </div>
-            <div id="navigation-tab">
-                <h2>Navigation:</h2>
-                <div>
-                    <label>You are at: </label>
-                    <span id="">(x, y)</span>
+                <!-- World -->
+                <div class="tab-wrapper">
+                    <div class="tab-header">
+                        <h2>World</h2>  
+                    </div>
+                    <div class="tab-content">                         
+                        <input placeholder="filename">
+                        <button>Save</button>
+                        <button>Open</button>
+                    </div>
                 </div>
-                <div>
-                    <input placeholder="x">
-                    <input placeholder="y">
-                    <button>Go</button>
-                    <br>
-                    <input placeholder="name">
-                    <button>Save</button>  
-                </div>
-                <div>
-                    <button>Home</button>
-                    <button>Castle</button>
-                </div>
-            </div>
-            <div id="tools-tab">
-                <h2>Tools:</h2>
-                <button>Pen</button>
-                <span>Color</span>
-                <button>Eraser</button>
-                <button>Hand</button>
             </div>
         </div>
+        <!-- Main canvas -->
         <canvas id="canvas"></canvas>
     </body>
 </html>

@@ -9,6 +9,8 @@ class Pen {
         this.world = world;
 
         this.canDraw = false;
+        this.lineJustStarted = false;
+        this.previousPoint;
         this.currentLine = null;
         this.currentChunk = null;
     }
@@ -20,22 +22,29 @@ class Pen {
 
     onMouseMove(event) {
         if (!this.canDraw) return;
-
-        var previousPoint = this.currentChunk.lines[this.currentChunk.lines.length - 1][this.currentChunk.lines[this.currentChunk.lines.length - 1].length-1];
+        if (this.lineJustStarted) {
+            this.currentLine.pop();
+            this.lineJustStarted = false;
+        }
+       
+        this.previousPoint = this.currentLine[this.currentLine.length - 1]
         var mousePos = new Point(event.x, event.y);
         var mouseWorldPos = Main.Camera.screenToWorld(mousePos);
         var chunkId = World.worldPointToChunkId(mouseWorldPos);
-        if (previousPoint != null && previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return; // TODO: change to screen points
+        if (this.previousPoint != null && this.previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return; // TODO: change to screen points
 
         
-        if (!this.currentChunk.id.equals(chunkId)) {            
+        if (!this.currentChunk.id.equals(chunkId)) {
+                      
             this.currentLine.push(mouseWorldPos)
             this.currentChunk.updateLastLine(Main.Camera);
 
             this.endLine();
             this.startNewLine(mouseWorldPos);
 
-            this.currentLine.push(previousPoint)
+            this.currentLine[0] = this.previousPoint;
+            this.lineJustStarted = false;
+            this.currentChunk.updateLastLine(Main.Camera);
         } else {
             this.currentLine.push(mouseWorldPos)
             if (this.currentLine.length != 1)
@@ -48,7 +57,6 @@ class Pen {
     }
 
     endLine() {
-        //if (this.currentLine.length == 1)
         this.currentChunk = null;
         this.currentLine = null;
         this.canDraw = false;
@@ -56,6 +64,7 @@ class Pen {
     }
 
     startNewLine(worldPoint) {
+        this.lineJustStarted = true;
         this.canDraw = true;
         this.currentLine = new Array();
         this.currentLine.push(worldPoint);

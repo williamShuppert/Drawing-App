@@ -17,7 +17,8 @@ class Chunk {
         this.ctx.lineCap = "round";
     }
 
-    updateLastLine(camera) { // change to update last segment in last line // this is used when drawing with the pen
+    // TODO: pass parameter of two points to draw to canvas
+    updateLastLine(camera) { // this is used when drawing with the pen
         var point1 = this.lines[this.lines.length - 1][this.lines[this.lines.length - 1].length - 2]
         var point2 = this.lines[this.lines.length - 1][this.lines[this.lines.length - 1].length - 1]
         point1 = this.worldPosRelativeToChunkPos(point1);
@@ -30,24 +31,15 @@ class Chunk {
         this.ctx.lineTo(point1.x, point1.y);
         this.ctx.lineTo(point2.x, point2.y);
         this.ctx.stroke();
-        /*
-        var points = this.lines[this.lines.length - 1];
-        this.ctx.beginPath();
-        points.forEach(point => {
-            point = this.worldPosRelativeToChunkPos(point);
-            point = point.add(camera.position);
-            point = camera.worldToScreen(point);
-            this.ctx.lineTo(point.x, point.y);
-        })
-        this.ctx.stroke();
-        */
+
     }
 
     // Updates image on zoom and when drawn on
     update() {
         this.resizeOffscreenCanvas()
 
-        this.ctx.lineCap = "round"
+        this.ctx.lineCap = "round";
+        this.ctx.lineJoin = "round";
 
         // Redraw all lines
         this.ctx.lineWidth = 10;
@@ -83,13 +75,14 @@ class Chunk {
         return chunkId.mult(this.size);
     }
 
-    render() {
+    render(temp, temp2, renderChunkBoarders) {
         var pos = Main.Camera.worldToScreen(this.position);
         Main.CTX.drawImage(this.image,pos.x,pos.y);
         
         // boarder around chunk
+        if (!renderChunkBoarders) return;
         Main.CTX.strokeStyle = "rgb(255,0,0)";
-        //Main.CTX.strokeRect(pos.x, pos.y, this.image.width,this.image.height);
+        Main.CTX.strokeRect(pos.x, pos.y, this.image.width,this.image.height);
         Main.CTX.strokeStyle = "rgb(0,0,0)";
     }
 }

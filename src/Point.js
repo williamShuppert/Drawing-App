@@ -33,6 +33,10 @@ class Point {
         return new Point(this.x / point.x, this.y / point.y);
     }
 
+    distance(point) {
+        return Math.sqrt(Math.pow(point.x - this.x, 2) + Math.pow(point.y - this.y, 2));
+    }
+
     equals(point) {
         return (this.x == point.x && this.y == point.y);
     }
@@ -43,6 +47,11 @@ class Point {
 
     ceil() {
         return new Point(Math.ceil(this.x), Math.ceil(this.y));
+    }
+
+    round(places) {
+        var num = places * 10;
+        return new Point(Math.round((this.x + Number.EPSILON) * num) / num,Math.round((this.y + Number.EPSILON) * num) / num);
     }
 
     toString() {
