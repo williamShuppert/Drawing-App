@@ -6,41 +6,39 @@ class Chunk {
     constructor(id, size) {
         this.id = id; // position is top left of chunk
         this.position = Chunk.chunkIdToChunkPos(id);
-        this.lines = new Array(); // in world position
+
+        this.objects = new Array();
 
         //var s = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit()))
         this.image = new OffscreenCanvas(0,0);
-        this.resizeOffscreenCanvas();
-        
         this.ctx = this.image.getContext("2d");
-        this.ctx.lineWidth = 10;
-        this.ctx.lineCap = "round";
+        this.resizeOffscreenCanvas();
+        this.ctx.lineWidth = 10; // remove later
     }
 
     // TODO: pass parameter of two points to draw to canvas
-    updateLastLine(camera) { // this is used when drawing with the pen
-        var point1 = this.lines[this.lines.length - 1][this.lines[this.lines.length - 1].length - 2]
-        var point2 = this.lines[this.lines.length - 1][this.lines[this.lines.length - 1].length - 1]
-        point1 = this.worldPosRelativeToChunkPos(point1);
-        point2 = this.worldPosRelativeToChunkPos(point2);
-        point1 = point1.add(Main.Camera.position);
-        point2 = point2.add(Main.Camera.position);
-        point1 = Main.Camera.worldToScreen(point1);
-        point2 = Main.Camera.worldToScreen(point2);
+    updateLastLine(line) { // this is used when drawing with the pen
+
+        var point1 = line.points[line.points.length - 1];
+        var point2 = line.points[line.points.length - 2];
+        point1 = this.worldPointToChunkScreenPoint(point1);
+        point2 = this.worldPointToChunkScreenPoint(point2);
         this.ctx.beginPath();
+        this.ctx.lineWidth = line.width;
+        this.ctx.strokeStyle = line.style;
         this.ctx.lineTo(point1.x, point1.y);
         this.ctx.lineTo(point2.x, point2.y);
         this.ctx.stroke();
-
     }
 
     // Updates image on zoom and when drawn on
     update() {
         this.resizeOffscreenCanvas()
 
-        this.ctx.lineCap = "round";
-        this.ctx.lineJoin = "round";
-
+        this.objects.forEach(obj => {
+            obj.render(this);
+        });
+        return;
         // Redraw all lines
         this.ctx.lineWidth = 10;
         this.lines.forEach(line => {
@@ -65,10 +63,20 @@ class Chunk {
         var offscreenCanvasSize = Chunk.size.mult(new Point(Main.Camera.pixelPerWorldUnit())).add(new Point(1));
         this.image.width = offscreenCanvasSize.x;
         this.image.height = offscreenCanvasSize.y;
+
+        this.ctx.lineCap = "round";
+        this.ctx.lineJoin = "round";
     }
 
     worldPosRelativeToChunkPos(worldPos) {
         return worldPos.sub(this.position);
+    }
+
+    worldPointToChunkScreenPoint(worldPoint) {
+        worldPoint = this.worldPosRelativeToChunkPos(worldPoint);
+        worldPoint = worldPoint.add(Main.Camera.position);
+        worldPoint = Main.Camera.worldToScreen(worldPoint);
+        return worldPoint;
     }
 
     static chunkIdToChunkPos(chunkId) {

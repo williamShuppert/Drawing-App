@@ -23,13 +23,14 @@ class World {
         });
     }
 
-    addObject(obj, chunkId) {
+    addObject(obj) {
+        var chunkId = World.worldPointToChunkId(obj.position);
         var chunk = this.chunks.get(chunkId.x, chunkId.y); // get chunk if it exists
         if (chunk == null) { // create new chunk if needed
             chunk = this.chunks.set(chunkId.x, chunkId.y, new Chunk(chunkId));
             console.log("Added new Chunk");
         }
-        chunk.lines.push(obj);
+        chunk.objects.push(obj);
         return chunk; // return the chunk the object is in
     }
 

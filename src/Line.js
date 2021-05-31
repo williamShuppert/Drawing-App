@@ -1,13 +1,25 @@
+import Object from "./Object.js";
+
 class Line extends Object {
-    constructor() {
-        super();
-        this.points = new Array();
-        this.color = "rgb(0,0,0)";
+    constructor(position) {
+        super(position);
+        this.points = new Array(); // world position
+        this.style = "rgb(0,0,0)";
         this.width = 5;
+        this.style = "rgb("+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+")";
     }
 
-    render() {
-
+    render(chunk) {
+        var point = chunk.worldPointToChunkScreenPoint(this.points[0])
+        chunk.ctx.beginPath();
+        chunk.ctx.lineWidth = this.width;
+        chunk.ctx.strokeStyle = this.style;
+        chunk.ctx.lineTo(point.x, point.y);
+        for (var i = 1; i < this.points.length; i++) {
+            point = chunk.worldPointToChunkScreenPoint(this.points[i])
+            chunk.ctx.lineTo(point.x, point.y);
+        }
+        chunk.ctx.stroke();
     }
 
     collides(point) {
