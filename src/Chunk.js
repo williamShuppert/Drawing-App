@@ -13,7 +13,7 @@ class Chunk {
         this.image = new OffscreenCanvas(0,0);
         this.ctx = this.image.getContext("2d");
         this.resizeOffscreenCanvas();
-        this.ctx.lineWidth = 10; // remove later
+
     }
 
     // TODO: pass parameter of two points to draw to canvas
@@ -31,15 +31,20 @@ class Chunk {
         this.ctx.stroke();
     }
 
-    // Updates image on zoom and when drawn on
-    update() {
+    // Updates image on zoom
+    renderImageOld() { // renderImage
+        var i = this.image.transferToImageBitmap();
+        this.resizeOffscreenCanvas();
+        this.ctx.drawImage(i,0,0,this.image.width, this.image.height);
+    }
+
+    // use when objects are changed
+    rerender() {
         this.resizeOffscreenCanvas()
 
         this.objects.forEach(obj => {
             obj.render(this);
-        });
-        
-        // render
+        });    
     }
 
     resizeOffscreenCanvas() {
@@ -66,12 +71,13 @@ class Chunk {
         return chunkId.mult(this.size);
     }
 
-    render(temp, temp2, renderChunkBoarders) {
+    // used when camera moving
+    renderImage(renderChunkBoarders) {
         var pos = Main.Camera.worldToScreen(this.position);
         Main.CTX.drawImage(this.image,pos.x,pos.y);
         
         // boarder around chunk
-        if (!renderChunkBoarders) return;
+        if (renderChunkBoarders) return;
         Main.CTX.strokeStyle = "rgb(255,0,0)";
         Main.CTX.strokeRect(pos.x, pos.y, this.image.width,this.image.height);
         Main.CTX.strokeStyle = "rgb(0,0,0)";

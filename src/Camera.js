@@ -8,10 +8,20 @@ class Camera {
         this.zoomMax = 5;
         this.zoomMin = .1;
         this.dimensions = dimensions;
+        this.renderGrid = true;
         this.maxChunk = 40; // how many chunks you can see horizontally when at 0% zoom
+        this.timeSinceLastZoom = null;
+        this.zoomRenderDelay = 500; // time to wait (milliseconds) before re-rendering everything after zooming
     }
 
     render() {
+        if (this.timeSinceLastZoom != null && Date.now() - this.timeSinceLastZoom > this.zoomRenderDelay) {
+            Main.World.rerender(this);
+            this.timeSinceLastZoom = null
+        }
+
+        if (!this.renderGrid) return;
+
         Main.CTX.lineWidth = .5;
         Main.CTX.beginPath();
         for (var i = 0; i < this.cameraWorldWidth(); i++) {
@@ -36,13 +46,14 @@ class Camera {
         var point2 = this.screenToWorld(point);
         this.position = this.position.add(point1.sub(point2));
         console.log(this.zoom);
-        Main.World.renderUpdate(); // make a listener in world or something
-        Main.World.render();
+
+        Main.World.renderChunkImageOld(); // make a listener in world or something
+
+        this.timeSinceLastZoom = Date.now();
     }
 
     getRelativeWidth(width) {
-        return width;
-        //return width * (this.zoomMin-this.zoom) / this.zoomMin;
+        return 1 / ((1/width) * this.zoom) ;
     }
 
     cameraWorldWidth() {

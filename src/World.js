@@ -6,20 +6,27 @@ import Main from "./Main.js";
 
 class World {
 
-    constructor(camera) {
+    constructor() {
         Chunk.size = new Point(25,25);
         this.chunks = new DoubleSortedArray();
+        this.renderChunkBorders = true;
     }
 
-    render(canvas, camera, renderChunkBoarders) { // TODO: only render visible chunks
+    renderChunkImage() { // TODO: only render visible chunks
         this.chunks.forEach(chunk => {
-            chunk.render(canvas, camera, renderChunkBoarders);
+            chunk.renderImage(this.renderChunkBoarders);
         });
     }
 
-    renderUpdate() { // TODO: only update visible chunks
+    renderChunkImageOld() { // TODO: only update visible chunks
         this.chunks.forEach(chunk => {
-            chunk.update();
+            chunk.renderImageOld();
+        });
+    }
+
+    rerender(canvas, camera, renderChunkBoarders) {
+        this.chunks.forEach(chunk => {
+            chunk.rerender(canvas, camera, renderChunkBoarders);
         });
     }
 

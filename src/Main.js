@@ -9,7 +9,6 @@ class Main {
         Main.CTX.canvas.height = window.innerHeight;
         Main.CTX.translate(0.5, 0.5);
 
-        this.renderGrid = true;
         this.renderChunkBoarders = true;
 
         this.lastFrame = Date.now()
@@ -27,8 +26,8 @@ class Main {
         
         Main.CTX.clearRect(-.5,-.5, Main.CTX.canvas.width, Main.CTX.canvas.height);
         
-        Main.World.render(Main.CTX, Main.Camera, this.renderChunkBoarders);
-        if (this.renderGrid) Main.Camera.render(Main.CTX);
+        Main.World.renderChunkImage(Main.Camera, this.renderChunkBoarders);
+        Main.Camera.render();
         
         this.deltaTime = (Date.now() - this.lastFrame) / 1000
         this.lastFrame = Date.now()
