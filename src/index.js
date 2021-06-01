@@ -9,8 +9,8 @@ var lastCameraPos = null;
 // TODO
 /*
 Work on Menu
-Implement Objects instead of lines
-Fix line width when zooming
+get rid of Main.Camera and Main.World and other static vars, except for canvas/ctx
+snap pen and optimize line
 Fix boarder drawing issue
 World should only render and update visible chunks
 Tools such as pen, eraser, drag, ect...
@@ -65,6 +65,7 @@ window.onmousemove = (event) => {
 
 document.onwheel = event => {
     Main.Camera.zoomToPoint(new Point(event.x, event.y), event.deltaY > 0)
+
 }
 
 window.onresize = event => {

@@ -2,15 +2,15 @@ import Object from "./Object.js";
 import Main from "./Main.js";
 
 class Line extends Object {
-    constructor(position) {
+    constructor(position, width, style) {
         super(position);
         this.points = new Array(); // world position
-        this.style = "rgb(0,0,0)";
-        this.width = 5;
-        this.style = "rgb("+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+")";
+        this.style = style;
+        this.width = width;
+        //this.style = "rgb("+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+")";
     }
 
-    render(chunk) {
+    render(chunk, camera) {
         var point = chunk.worldPointToChunkScreenPoint(this.points[0])
         chunk.ctx.beginPath();
         chunk.ctx.lineWidth = Main.Camera.getRelativeWidth(this.width);

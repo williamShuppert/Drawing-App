@@ -9,6 +9,9 @@ class Pen {
         this.camera = camera;
         this.world = world;
 
+        this.width = 5;
+        this.style = "rgb(0,0,0)";
+
         this.canDraw = false;
         this.lineJustStarted = false;
         this.previousPoint;
@@ -17,6 +20,7 @@ class Pen {
     }
 
     onMouseDown(event) {
+        this.style = "rgb("+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+","+Math.floor(Math.random() * 255)+")";
         this.startNewLine(Main.Camera.screenToWorld(new Point(event.x, event.y)));
         this.canDraw = true;
     }
@@ -67,7 +71,7 @@ class Pen {
     startNewLine(worldPoint) {
         this.lineJustStarted = true;
         this.canDraw = true;
-        this.currentLine = new Line(worldPoint);
+        this.currentLine = new Line(worldPoint, this.width, this.style);
         this.currentLine.points.push(worldPoint);
         this.currentLine.points.push(worldPoint);
         this.currentChunk = Main.World.addObject(this.currentLine);
