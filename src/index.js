@@ -30,6 +30,7 @@ window.onkeydown = (event) => {
     if (event.key == "s") Main.Camera.position.y+=.10
     if (event.key == "2") Main.Camera.zoom -= .05;
     if (event.key == "1") Main.Camera.zoom += .05;
+    if (event.key == "b") Main.Pen.snapToGrid = !Main.Pen.snapToGrid;
     if (event.key == "1" || event.key == "2") {
         Main.World.renderUpdate();
         Main.World.render();
