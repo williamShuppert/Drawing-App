@@ -50,6 +50,7 @@ class Point {
     }
 
     round(places) {
+        if (places == undefined || places == 0) return new Point(Math.round(this.x), Math.round(this.y));
         var num = places * 10;
         return new Point(Math.round((this.x + Number.EPSILON) * num) / num,Math.round((this.y + Number.EPSILON) * num) / num);
     }

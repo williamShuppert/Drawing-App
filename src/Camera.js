@@ -12,6 +12,8 @@ class Camera {
         this.maxChunk = 40; // how many chunks you can see horizontally when at 0% zoom
         this.timeSinceLastZoom = null;
         this.zoomRenderDelay = 500; // time to wait (milliseconds) before re-rendering everything after zooming
+        this.gridStyle = "rgb(1,1,1,.05)";
+        this.gridWidth = 2;
     }
 
     render() {
@@ -22,7 +24,8 @@ class Camera {
 
         if (!this.renderGrid) return;
 
-        Main.CTX.lineWidth = .5;
+        Main.CTX.lineWidth = this.gridWidth;
+        Main.CTX.strokeStyle = this.gridStyle;
         Main.CTX.beginPath();
         for (var i = 0; i < this.cameraWorldWidth(); i++) {
             var p = this.worldToScreen(this.position.ceil().add(new Point(i)));

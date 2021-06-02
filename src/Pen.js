@@ -11,6 +11,7 @@ class Pen {
 
         this.width = 5;
         this.style = "rgb(0,0,0)";
+        this.snapToGrid = true;
 
         this.canDraw = false;
         this.lineJustStarted = false;
@@ -35,6 +36,15 @@ class Pen {
         this.previousPoint = this.currentLine.points[this.currentLine.points.length - 1]
         var mousePos = new Point(event.x, event.y);
         var mouseWorldPos = Main.Camera.screenToWorld(mousePos);
+
+        if (this.snapToGrid) {
+            mouseWorldPos = mouseWorldPos.round();
+            if (this.previousPoint.equals(mouseWorldPos)) return;
+            // snap mouseWorldPos to grid
+            // if mouseWorldPos is the same as previous point return
+            // look at the slope if it's the same delete the last point
+        }
+
         var chunkId = World.worldPointToChunkId(mouseWorldPos);
         if (this.previousPoint != null && this.previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return; // TODO: change to screen points
 
@@ -72,6 +82,11 @@ class Pen {
         this.lineJustStarted = true;
         this.canDraw = true;
         this.currentLine = new Line(worldPoint, this.width, this.style);
+        if (this.snapToGrid) {
+            // snap worldPoint to grid
+            worldPoint = worldPoint.round();
+            console.log(worldPoint);
+        }
         this.currentLine.points.push(worldPoint);
         this.currentLine.points.push(worldPoint);
         this.currentChunk = Main.World.addObject(this.currentLine);

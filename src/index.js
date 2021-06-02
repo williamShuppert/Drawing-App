@@ -71,6 +71,6 @@ document.onwheel = event => {
 window.onresize = event => {
     Main.CTX.canvas.width  = window.innerWidth;
     Main.CTX.canvas.height = window.innerHeight;
-    Main.World.renderUpdate();
+    Main.World.rerender();
     Main.Camera.render();
 }
