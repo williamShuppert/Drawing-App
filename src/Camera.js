@@ -11,7 +11,7 @@ class Camera {
         this.renderGrid = true;
         this.maxChunk = 40; // how many chunks you can see horizontally when at 0% zoom
         this.timeSinceLastZoom = null;
-        this.zoomRenderDelay = 500; // time to wait (milliseconds) before re-rendering everything after zooming
+        this.zoomRenderDelay = 350; // time to wait (milliseconds) before re-rendering everything after zooming
         this.gridStyle = "rgb(1,1,1,.05)";
         this.gridWidth = 2;
     }
