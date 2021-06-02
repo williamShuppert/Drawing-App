@@ -9,12 +9,12 @@ class World {
     constructor() {
         Chunk.size = new Point(25,25);
         this.chunks = new DoubleSortedArray();
-        this.renderChunkBorders = true;
+        this.renderChunkBorders = false;
     }
 
     renderChunkImage() { // TODO: only render visible chunks
         this.chunks.forEach(chunk => {
-            chunk.renderImage(this.renderChunkBoarders);
+            chunk.renderImage(this.renderChunkBorders);
         });
     }
 
@@ -24,9 +24,9 @@ class World {
         });
     }
 
-    rerender(canvas, camera, renderChunkBoarders) {
+    rerender(canvas, camera) {
         this.chunks.forEach(chunk => {
-            chunk.rerender(canvas, camera, renderChunkBoarders);
+            chunk.rerender(canvas, camera);
         });
     }
 
