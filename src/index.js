@@ -9,9 +9,11 @@ var lastCameraPos = null;
 // TODO
 /*
 Work on Menu
-get rid of Main.Camera and Main.World and other static vars, except for canvas/ctx
-snap pen and optimize line
 Fix boarder drawing issue
+tool manager
+get rid of Main.Camera and Main.World and other static vars, except for canvas/ctx
+add text and image tools
+optimize line
 World should only render and update visible chunks
 Tools such as pen, eraser, drag, ect...
 Undo

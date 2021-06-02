@@ -12,6 +12,7 @@ class Pen {
         this.width = 5;
         this.style = "rgb(0,0,0)";
         this.snapToGrid = true;
+        this.snapSafeArea = .4;
 
         this.canDraw = false;
         this.lineJustStarted = false;
@@ -38,10 +39,9 @@ class Pen {
         var mouseWorldPos = Main.Camera.screenToWorld(mousePos);
 
         if (this.snapToGrid) {
-            mouseWorldPos = mouseWorldPos.round();
+            mouseWorldPos = this.snapPoint(mouseWorldPos);
+            if (mouseWorldPos == null) return;
             if (this.previousPoint.equals(mouseWorldPos)) return;
-            // snap mouseWorldPos to grid
-            // if mouseWorldPos is the same as previous point return
             // look at the slope if it's the same delete the last point
         }
 
@@ -82,11 +82,7 @@ class Pen {
         this.lineJustStarted = true;
         this.canDraw = true;
         this.currentLine = new Line(worldPoint, this.width, this.style);
-        if (this.snapToGrid) {
-            // snap worldPoint to grid
-            worldPoint = worldPoint.round();
-            console.log(worldPoint);
-        }
+        if (this.snapToGrid) worldPoint = worldPoint.round();
         this.currentLine.points.push(worldPoint);
         this.currentLine.points.push(worldPoint);
         this.currentChunk = Main.World.addObject(this.currentLine);
@@ -94,8 +90,10 @@ class Pen {
         console.log("Start line")
     }
 
-    sendPoint() {
-
+    snapPoint(worldPoint) {
+        var center = worldPoint.floor().add(new Point(.5));
+        if (center.distance(worldPoint) < this.snapSafeArea) return null;
+        return worldPoint.round();
     }
 }
 
