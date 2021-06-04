@@ -9,9 +9,9 @@ class Pen {
         this.camera = camera;
         this.world = world;
 
-        this.width = 5;
+        this.width = 100;
         this.style = "rgb(0,0,0)";
-        this.snapToGrid = true;
+        this.snapToGrid = false;
         this.snapSafeArea = .4;
 
         this.canDraw = false;
@@ -19,6 +19,14 @@ class Pen {
         this.previousPoint;
         this.currentLine = null;
         this.currentChunk = null;
+
+        // vars for seamless chunk transition when drawing
+        this.currentLeftOrRightChunk = null;
+        this.currentLeftOrRightLine = null;
+        this.currentTopOrBottomChunk = null;
+        this.currentTopOrBottomLine = null;
+        // make smooth corner transitions
+        // split up left and right and bottom and top
     }
 
     onMouseDown(event) {
@@ -49,21 +57,109 @@ class Pen {
         if (this.previousPoint != null && this.previousPoint.sub(mouseWorldPos).evaluate((x,y) => (Math.abs(x) < .1 && Math.abs(y) < .1))) return; // TODO: change to screen points
 
         
-        if (!this.currentChunk.id.equals(chunkId)) {
-                      
-            this.currentLine.points.push(mouseWorldPos)
+        if (!this.currentChunk.id.equals(chunkId)) { // create new line when entering new chunk
+               
+            // for seamless chunk transition
+            if (this.currentChunk.id.equals(chunkId.add(new Point(1,0))) || this.currentChunk.id.equals(chunkId.sub(new Point(1,0)))) {
+                this.currentLine = this.currentLeftOrRightLine;
+                this.currentChunk = this.currentLeftOrRightChunk;
+                console.log("smooth switch")
+            } else if (this.currentChunk.id.equals(chunkId.add(new Point(0,1))) || this.currentChunk.id.equals(chunkId.sub(new Point(0,1)))) {
+                this.currentLine = this.currentTopOrBottomLine;
+                this.currentChunk = this.currentTopOrBottomChunk;
+                console.log("smooth switch")
+            }
+
+            this.currentLeftOrRightLine = null;
+            this.currentLeftOrRightChunk = null;
+            this.currentTopOrBottomLine = null;
+            this.currentTopOrBottomChunk = null;
+
+            if (this.currentChunk == null) this.startNewLine(mouseWorldPos);
             this.currentChunk.updateLastLine(this.currentLine);
 
-            this.endLine();
-            this.startNewLine(mouseWorldPos);
 
-            this.currentLine.points[0] = this.previousPoint;
-            this.lineJustStarted = false;
-            this.currentChunk.updateLastLine(this.currentLine);
-        } else {
+        } else { // update line
             this.currentLine.points.push(mouseWorldPos)
             if (this.currentLine.points.length != 1)
                 this.currentChunk.updateLastLine(this.currentLine);
+
+            this.seamlessChunkTransition(mouseWorldPos)
+        }
+    }
+
+    seamlessChunkTransition(mouseWorldPos) { // when the width of the line crosses over to neighbor chunk
+        
+        var worldWidth = this.widthToWorldDistance(this.width);
+
+        var leftWorldPoint = mouseWorldPos.sub(new Point(worldWidth, 0)); // left most point of point + width
+        var leftPointInChunk = World.worldPointToChunkId(leftWorldPoint);
+
+        var rightWorldPoint = mouseWorldPos.add(new Point(worldWidth, 0));
+        var rightPointInChunk = World.worldPointToChunkId(rightWorldPoint);
+
+        var topWorldPoint = mouseWorldPos.sub(new Point(0, worldWidth));
+        var topPointInChunk = World.worldPointToChunkId(topWorldPoint);
+
+        var bottomWorldPoint = mouseWorldPos.add(new Point(0, worldWidth));
+        var bottomPointInChunk = World.worldPointToChunkId(bottomWorldPoint);
+
+        // if switching from one chunk to another
+        // if (this.currentLeftOrRightChunk != null && this.currentLeftOrRightChunk.id.equals(World.worldPointToChunkId(mouseWorldPos))) {
+        //     if (this.currentLeftOrRightLine.points.length <= 7) console.log("Remove")
+        //     this.currentLeftOrRightLine = null;
+        //     this.currentLeftOrRightChunk = null;
+        // } else if (this.currentTopOrBottomChunk != null && this.currentTopOrBottomChunk.id.equals(World.worldPointToChunkId(mouseWorldPos))) {
+        //     if (this.currentTopOrBottomLine.points.length <= 7) console.log("Remove")
+        //     this.currentTopOrBottomLine = null;
+        //     this.currentTopOrBottomChunk = null;
+        // }
+
+        if (!this.currentChunk.id.equals(leftPointInChunk)) {
+            this.drawLineOnLeftOrRightChunk(leftWorldPoint, mouseWorldPos);
+        } else if (!this.currentChunk.id.equals(rightPointInChunk)) {
+            this.drawLineOnLeftOrRightChunk(rightWorldPoint, mouseWorldPos);
+        } else {
+            this.currentLeftOrRightChunk = null;
+            this.currentLeftOrRightLine = null;
+        }
+
+        if (!this.currentChunk.id.equals(topPointInChunk)) {
+            this.drawLineOnTopOrBottomChunk(topWorldPoint, mouseWorldPos);
+        } else if (!this.currentChunk.id.equals(bottomPointInChunk)) {
+            this.drawLineOnTopOrBottomChunk(bottomWorldPoint, mouseWorldPos);
+        } else {
+            this.currentTopOrBottomChunk = null;
+            this.currentTopOrBottomLine = null;
+        }
+    }
+
+    drawLineOnLeftOrRightChunk(positionInChunk, position) {
+        if (this.currentLeftOrRightLine == null) {         
+            this.currentLeftOrRightLine = new Line(positionInChunk, this.width, this.style);
+            this.currentLeftOrRightChunk = Main.World.addObject(this.currentLeftOrRightLine);
+
+            this.currentLeftOrRightLine.points.push(position);
+            this.currentLeftOrRightLine.points.push(position);
+            this.currentLeftOrRightChunk.updateLastLine(this.currentLeftOrRightLine);
+        } else {
+            // if first two points are the same remove one
+            this.currentLeftOrRightLine.points.push(position);
+            this.currentLeftOrRightChunk.updateLastLine(this.currentLeftOrRightLine);
+        }
+    }
+
+    drawLineOnTopOrBottomChunk(positionInChunk, position) {
+        if (this.currentTopOrBottomLine == null) {            
+            this.currentTopOrBottomLine = new Line(positionInChunk, this.width, this.style);
+            this.currentTopOrBottomChunk = Main.World.addObject(this.currentTopOrBottomLine);
+
+            this.currentTopOrBottomLine.points.push(position);
+            this.currentTopOrBottomLine.points.push(position);
+            this.currentTopOrBottomChunk.updateLastLine(this.currentTopOrBottomLine);
+        } else {
+            this.currentTopOrBottomLine.points.push(position);
+            this.currentTopOrBottomChunk.updateLastLine(this.currentTopOrBottomLine);
         }
     }
 
@@ -75,7 +171,12 @@ class Pen {
         this.currentChunk = null;
         this.currentLine = null;
         this.canDraw = false;
-        console.log("End line")
+
+        // for seamless chunk transition
+        this.currentLeftOrRightLine = null;
+        this.currentLeftOrRightChunk = null;
+        this.currentTopOrBottomLine = null;
+        this.currentTopOrBottomChunk = null;
     }
 
     startNewLine(worldPoint) {
@@ -87,7 +188,11 @@ class Pen {
         this.currentLine.points.push(worldPoint);
         this.currentChunk = Main.World.addObject(this.currentLine);
         this.currentChunk.updateLastLine(this.currentLine);
-        console.log("Start line")
+        this.seamlessChunkTransition(worldPoint)
+    }
+
+    widthToWorldDistance(width) {
+        return width / 75.6;
     }
 
     snapPoint(worldPoint) {

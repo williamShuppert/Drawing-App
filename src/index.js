@@ -8,16 +8,18 @@ var lastCameraPos = null;
 
 // TODO
 /*
-Work on Menu
-Fix boarder drawing issue
-tool manager
-get rid of Main.Camera and Main.World and other static vars, except for canvas/ctx
-add text and image tools
-optimize line
-World should only render and update visible chunks
-Tools such as pen, eraser, drag, ect...
-Undo
-Saving and opening from file
+    Work on Menu
+    Fix boarder drawing issue
+    get rid of Main.Camera and Main.World and other static vars, except for canvas/ctx
+    tool manager
+    shape tool
+    add text and image tools
+    optimize line
+    World should only render and update visible chunks
+    Tools such as pen, eraser, drag, ect...
+    Undo
+    Saving and opening from file
+    if you zoom out far and move mouse quickly you can skip over a whole chunk and there will be a gap in the line
 */
 
 var main = new Main();
