@@ -9,7 +9,7 @@ class Pen {
         this.camera = camera;
         this.world = world;
 
-        this.width = 100;
+        this.width = 5;
         this.style = "rgb(0,0,0)";
         this.snapToGrid = false;
         this.snapSafeArea = .4;
@@ -59,21 +59,39 @@ class Pen {
         
         if (!this.currentChunk.id.equals(chunkId)) { // create new line when entering new chunk
                
+            this.currentLine.points.push(mouseWorldPos)
+            this.currentChunk.updateLastLine(this.currentLine);
+
             // for seamless chunk transition
-            if (this.currentChunk.id.equals(chunkId.add(new Point(1,0))) || this.currentChunk.id.equals(chunkId.sub(new Point(1,0)))) {
+            var chunkThatMouseIsIn = World.worldPointToChunkId(Main.Camera.screenToWorld(mousePos));
+            if (this.snapToGrid) chunkThatMouseIsIn = chunkId;
+            if (this.currentChunk.id.equals(chunkThatMouseIsIn.add(new Point(1,0))) || this.currentChunk.id.equals(chunkThatMouseIsIn.sub(new Point(1,0)))) {
                 this.currentLine = this.currentLeftOrRightLine;
                 this.currentChunk = this.currentLeftOrRightChunk;
                 console.log("smooth switch")
-            } else if (this.currentChunk.id.equals(chunkId.add(new Point(0,1))) || this.currentChunk.id.equals(chunkId.sub(new Point(0,1)))) {
+            } else if (this.currentChunk.id.equals(chunkThatMouseIsIn.add(new Point(0,1))) || this.currentChunk.id.equals(chunkThatMouseIsIn.sub(new Point(0,1)))) {
                 this.currentLine = this.currentTopOrBottomLine;
                 this.currentChunk = this.currentTopOrBottomChunk;
                 console.log("smooth switch")
             }
-
+        
+            if (this.currentLine == null) {
+                this.startNewLine(mouseWorldPos);
+                this.lineJustStarted = false;
+            }
+            
             this.currentLeftOrRightLine = null;
             this.currentLeftOrRightChunk = null;
             this.currentTopOrBottomLine = null;
             this.currentTopOrBottomChunk = null;
+            
+            this.currentLine.points[0] = this.previousPoint;
+            
+            
+            //this.endLine();
+            //this.startNewLine(mouseWorldPos);
+            
+            // this.lineJustStarted = false;
 
             if (this.currentChunk == null) this.startNewLine(mouseWorldPos);
             this.currentChunk.updateLastLine(this.currentLine);
