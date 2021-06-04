@@ -19,7 +19,7 @@ class Chunk {
 
     // TODO: pass parameter of two points to draw to canvas
     updateLastLine(line) { // this is used when drawing with the pen
-
+        if (line.length < 2) return;
         var point1 = line.points[line.points.length - 1];
         var point2 = line.points[line.points.length - 2];
         point1 = this.worldPointToChunkScreenPoint(point1);

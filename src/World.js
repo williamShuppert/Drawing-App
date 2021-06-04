@@ -9,7 +9,7 @@ class World {
     constructor() {
         Chunk.size = new Point(25,25);
         this.chunks = new DoubleSortedArray();
-        this.renderChunkBorders = false;
+        this.renderChunkBorders = true;
     }
 
     renderChunkImage() { // TODO: only render visible chunks
@@ -35,9 +35,10 @@ class World {
         var chunk = this.chunks.get(chunkId.x, chunkId.y); // get chunk if it exists
         if (chunk == null) { // create new chunk if needed
             chunk = this.chunks.set(chunkId.x, chunkId.y, new Chunk(chunkId));
-            console.log("Added new Chunk");
+            console.log("Added new Chunk: " + chunkId);
         }
         chunk.objects.push(obj);
+        console.log("Added Obj")
         return chunk; // return the chunk the object is in
     }
 
